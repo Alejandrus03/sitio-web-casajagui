@@ -18,6 +18,7 @@
             <tr class="bg-gray-200 text-left">
                 <th class="p-2">Nombre</th>
                 <th class="p-2">Categoría</th>
+                <th class="border px-4 py-2">Ver descripción</th>
                 <th class="p-2">Imagen</th>
                 <th class="p-2">Precio</th>
                 <th class="p-2">Visible</th>
@@ -39,15 +40,22 @@
                             Sin categoría
                         @endif
                     </td>
-                    <td class="p-2"> 
-                        @if($producto->imagen)
-                                <img 
-                                src="data:image/jpeg;base64,{{ base64_encode($producto->imagen) }}" 
-                                alt="Imagen de {{ $producto->nombre }}" 
-                                class="w-20 h-20 rounded mb-2"
-                                />
-                        @endif
+                    <!-- Columna Ver Descripción -->
+                    <td class="border px-4 py-2 text-center">
+                    <button onclick="openModal({{ json_encode($producto->descripcion) }})" 
+                            class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
+                        Ver descripción
+                    </button>
                     </td>
+                                <!-- Columna Imagen -->
+                    <td class="border px-4 py-2 text-center">
+                    @if($producto->imagen)
+                        <img src="data:image/jpeg;base64,{{ base64_encode($producto->imagen) }}" 
+                            alt="Imagen de {{ $producto->nombre }}" 
+                            class="w-16 h-16 object-cover rounded"/>
+                    @endif
+                    </td>
+                    
                     <td class="p-2">${{ $producto->precio }}</td>
                     
                     <td class="p-2">
@@ -81,4 +89,36 @@
             </div>
         </div>
     </div>
+    <!-- Modal para mostrar la descripción del producto -->
+<div id="modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden z-50">
+  <div class="bg-white p-6 rounded shadow relative max-w-md w-full mx-4">
+    <button id="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl font-bold">
+      &times;
+    </button>
+    <h3 class="text-2xl font-bold mb-4">Descripción del Producto</h3>
+    <p id="modalDescription" class="text-gray-700"></p>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script>
+  const modal = document.getElementById('modal');
+  const modalDescription = document.getElementById('modalDescription');
+  const closeModalBtn = document.getElementById('closeModal');
+
+  function openModal(description) {
+    modalDescription.textContent = description;
+    modal.classList.remove('hidden');
+  }
+
+  closeModalBtn.addEventListener('click', () => {
+    modal.classList.add('hidden');
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+    }
+  });
+</script>
 </x-app-layout>
